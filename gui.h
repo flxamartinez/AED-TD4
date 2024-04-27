@@ -143,6 +143,8 @@ public:
 
             // Dibuja el grafo en el frame actual
             graph.draw();
+            // Dibuja el 'path' resultante de la simulacion,
+            // si 'extra_lines' es true, tambien dibujara el resto de aristas visitadas
             path_finding_manager.draw(draw_extra_lines);
 
             // Hace un display del frame actual

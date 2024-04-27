@@ -35,7 +35,7 @@ enum Algorithm {
 class PathFindingManager {
     WindowManager *window_manager;
     std::vector<sfLine> path;
-    std::vector<sfLine> lines;
+    std::vector<sfLine> visited_edges;
 
     struct Entry {
         Node* node;
@@ -58,6 +58,21 @@ class PathFindingManager {
         // TODO: Add your code here
     }
 
+    //* --- set_final_path ---
+    // Esta funcion se usa para asignarle un valor a 'this->path' al final de la simulacion del algoritmo
+    // 'prev' es un std::unordered_map que recibe un puntero a un nodo y retorna la arista y vertice anterior a el
+    // formando asi un camino, o 'path'.
+    //
+    // ej.
+    //     prev(a): [b, (a, b)]
+    //     prev(b): [c, (b, c)]
+    //     prev(c): [d, (c, d)]
+    //     prev(d): [NULL, NULL]
+    //
+    // Luego, this->path = [Line(a.coord, b.coord), Line(b.coord, c.coord), Line(c.coord, d.coord)]\
+    //
+    // Este path sera utilizado para hacer el 'draw()' del 'path' entre 'src' y 'dest'.
+    //*
     void set_final_path(std::unordered_map<Node *, std::pair<Node *, Edge *>> &prev) {
         // TODO: Add your code here
     }
@@ -78,26 +93,30 @@ public:
 
     void reset() {
         path.clear();
-        lines.clear();
+        visited_edges.clear();
         src = nullptr;
         dest = nullptr;
     }
 
     void draw(bool draw_extra_lines) {
+        // Dibujar informacion extra
         if (draw_extra_lines) {
-            for (sfLine &line: lines) {
+            for (sfLine &line: visited_edges) {
                 line.draw(window_manager->get_window(), sf::RenderStates::Default);
             }
         }
 
+        // Dibujar el path resultante
         for (sfLine &line: path) {
             line.draw(window_manager->get_window(), sf::RenderStates::Default);
         }
 
+        // Dibujar el nodo inicial
         if (src != nullptr) {
             src->draw(window_manager->get_window());
         }
 
+        // Dibujar el nodo final
         if (dest != nullptr) {
             dest->draw(window_manager->get_window());
         }
