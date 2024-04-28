@@ -22,9 +22,9 @@
 //     - window_manager: Se usa para que el grafo pueda dibujarse en el frame actual
 //
 // Funciones miembro
-//     - parse_csv     : Lee las aristas y vertices desde los csv
+//     - parse_csv     : Lee las aristas y vértices desde los csv
 //     - draw          : Dibuja las aristas y luego los vertices del grafo sobre la ventana
-//     - reset         : Restaura los colores de vertices y aristas a sus colores por defecto
+//     - reset         : Restaura los colores de vértices y aristas a sus colores por defecto
 // *
 struct Graph {
     WindowManager *window_manager;
@@ -56,13 +56,11 @@ struct Graph {
 
     void reset() {
         for (Edge* edge: edges) {
-            edge->color = default_edge_color;
-            edge->thickness = default_thickness;
+            edge->reset();
         }
 
         for (auto& [_, node]: nodes) {
-            node->color = default_node_color;
-            node->radius = default_radius;
+            node->reset();
         }
     }
 };

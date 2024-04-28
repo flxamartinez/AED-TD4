@@ -31,6 +31,7 @@ struct Edge;
 // Funciones miembro
 //     - parse_csv     : Lee los vertices desde el csv
 //     - draw          : Dibuja el vertice instanciado
+//     - reset         : Setea 'color' y 'radius' a sus valores por defecto
 // *
 struct Node {
     std::size_t id;
@@ -83,6 +84,11 @@ struct Node {
         point.setFillColor(color);
 
         window.draw(point);
+    }
+
+    void reset() {
+        color = default_node_color;
+        radius = default_radius;
     }
 };
 

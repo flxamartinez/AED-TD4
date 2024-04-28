@@ -28,22 +28,22 @@ public:
 
         sf::Vector2f offset = (this->thickness/2.f)*unitPerpendicular;
 
-        vertices[0].position = point1 + offset;
-        vertices[1].position = point2 + offset;
-        vertices[2].position = point2 - offset;
-        vertices[3].position = point1 - offset;
+        Vertices[0].position = point1 + offset;
+        Vertices[1].position = point2 + offset;
+        Vertices[2].position = point2 - offset;
+        Vertices[3].position = point1 - offset;
 
-        for (auto & vertex : vertices) {
+        for (auto & vertex : Vertices) {
             vertex.color = color;
         }
     }
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override {
-        target.draw(vertices,4,sf::Quads);
+        target.draw(Vertices,4,sf::Quads);
     }
 
 private:
-    sf::Vertex vertices[4];
+    sf::Vertex Vertices[4];
     float thickness;
     sf::Color color {};
 };
@@ -54,8 +54,8 @@ private:
 // Esta estructura contiene la informacion de una arista
 //
 // Variables miembro
-//     - src           : Vertice inicial de la arista
-//     - dest          : Vertice final de la arista
+//     - src           : Vértice inicial de la arista
+//     - dest          : Vértice final de la arista
 //     - max_speed     : Velocidad maxima en la que se puede ir de 'src' a 'dest'
 //     - length        : Longitud de la trayectoria de 'src' a 'dest'
 //     - one_way       : Si es falso, significa que tambien existe una arista en el grafo de 'dest' a 'src'.
@@ -67,6 +67,7 @@ private:
 // Funciones miembro
 //     - parse_csv     : Lee las aristas desde el csv
 //     - draw          : Dibuja la arista instanciada
+//     - reset         : Setea 'color' y 'thickness' a sus valores por defecto
 // *
 struct Edge {
     Node *src = nullptr;
@@ -151,6 +152,11 @@ struct Edge {
     void draw(sf::RenderWindow &window) const {
         sfLine line(src->coord, dest->coord, color, thickness);
         line.draw(window, sf::RenderStates::Default);
+    }
+
+    void reset() {
+        color = default_edge_color;
+        thickness = default_thickness;
     }
 };
 
