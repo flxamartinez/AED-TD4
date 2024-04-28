@@ -49,4 +49,4 @@ Se les solicita implementar 2 algoritmos para busqueda en grafos
 
 ## Diagrama de clases UML 
 
-![image](https://github.com/utec-cs-aed/homework_graph/assets/79115974/aa7a0442-49f7-4857-8866-bc297c68e019)
+![image](https://github.com/utec-cs-aed/homework_graph/assets/79115974/f5a3d89e-cb48-4715-b172-a17e6e27ee24)
