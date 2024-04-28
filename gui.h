@@ -84,10 +84,9 @@ public:
                                 path_finding_manager.exec(graph, AStar);
                                 break;
                             }
-                            // R = Restaura los valores de 'src' y 'dest' a nullptr,
-                            //     también limpia la ultima simulación realizada.
+                            // R = Limpia la ultima simulación realizada.
+                            //     También restaura los valores de 'src' y 'dest' a nullptr.
                             case sf::Keyboard::R: {
-                                graph.reset();
                                 path_finding_manager.reset();
                                 break;
                             }

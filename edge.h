@@ -153,11 +153,6 @@ struct Edge {
         sfLine line(src->coord, dest->coord, color, thickness);
         line.draw(window, sf::RenderStates::Default);
     }
-
-    void reset() {
-        color = default_edge_color;
-        thickness = default_thickness;
-    }
 };
 
 

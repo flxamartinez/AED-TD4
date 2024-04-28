@@ -53,16 +53,6 @@ struct Graph {
             node->draw(window_manager->get_window());
         }
     }
-
-    void reset() {
-        for (Edge* edge: edges) {
-            edge->reset();
-        }
-
-        for (auto& [_, node]: nodes) {
-            node->reset();
-        }
-    }
 };
 
 

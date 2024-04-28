@@ -105,8 +105,17 @@ public:
     void reset() {
         path.clear();
         visited_edges.clear();
-        src = nullptr;
-        dest = nullptr;
+
+        if (src) {
+            src->reset();
+            src = nullptr;
+            // ^^^ Pierde la referencia luego de restaurarlo a sus valores por defecto
+        }
+        if (dest) {
+            dest->reset();
+            dest = nullptr;
+            // ^^^ Pierde la referencia luego de restaurarlo a sus valores por defecto
+        }
     }
 
     void draw(bool draw_extra_lines) {
