@@ -45,10 +45,11 @@ El dataset consiste de dos csv:
 
 
 ## Algoritmos
-Se les solicita implementar 2 algoritmos para busqueda en grafos
+Se les solicita implementar tres algoritmos para busqueda en grafos
 
 - *Dijkstra*
 
+- Best First Search
 
 - *A**
 
