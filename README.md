@@ -49,10 +49,13 @@ Se les solicita implementar tres algoritmos para busqueda en grafos
 
 - *Dijkstra*
 
-- Best First Search
+- *Best First Search*
 
 - *A**
 
+Además:
+- Analice la complejidad computacional de los tres algoritmos de acuerdo a su propia implementación.
+- Puede considere como heuristica la distancia en linea recta. 
 
 ## Diagrama de clases UML 
 
