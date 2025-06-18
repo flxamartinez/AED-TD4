@@ -55,7 +55,8 @@ Se les solicita implementar tres algoritmos para busqueda en grafos
 
 Además:
 - Analice la complejidad computacional de los tres algoritmos de acuerdo a su propia implementación.
-- Puede considere como heuristica la distancia en linea recta. 
+- Puede considere como heuristica la distancia en linea recta.
+- **Debe realizar un pequeño video (2 min) mostrando la funcionalidad visual de cada algoritmo**
 
 ## Diagrama de clases UML 
 
