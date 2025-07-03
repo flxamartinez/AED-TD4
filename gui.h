@@ -53,6 +53,7 @@ public:
     }
 
     void main_loop() {
+        std::cout << "entre al loop" << std::endl;
         bool draw_extra_lines = false;
 
         // Corre la GUI siempre y cuando la ventana esté abierta
@@ -63,6 +64,7 @@ public:
 
             while (window_manager.poll_event(event)) {
                 // Verifica por casos que evento se lanzó en la iteración actual
+
                 switch (event.type) {
                     // Caso 1: El usuario cerro la ventana
                     case sf::Event::Closed: {
@@ -76,7 +78,13 @@ public:
                         switch (event.key.code) {
                             // D = Ejecutar Dijkstra
                             case sf::Keyboard::D: {
+                                std::cout << "entre al loop" << std::endl;
                                 path_finding_manager.exec(graph, Dijkstra);
+                                break;
+                            }
+                                // D = Ejecutar Dijkstra
+                            case sf::Keyboard::B: {
+                                path_finding_manager.exec(graph, BFS);
                                 break;
                             }
                             // A = Ejecutar AStar

@@ -10,12 +10,15 @@
 #include "graph.h"
 #include <unordered_map>
 #include <set>
+#include <queue>
+#include <cmath>
 
 
 // Este enum sirve para identificar el algoritmo que el usuario desea simular
 enum Algorithm {
     None,
     Dijkstra,
+    BFS,
     AStar
 };
 
@@ -47,24 +50,114 @@ class PathFindingManager {
     };
 
     void dijkstra(Graph &graph) {
-        std::unordered_map<Node *, Node *> parent;
-        // TODO: Add your code here
+        std::unordered_map<Node*, double> dist;
+        std::unordered_map<Node*, Node*> parent;
+        auto cmp = [&](Node* a, Node* b) { return dist[a] > dist[b]; };
+        std::priority_queue<Node*, std::vector<Node*>, decltype(cmp)> pq(cmp);
+
+        for (auto& [_, node] : graph.nodes) {
+            dist[node] = INFINITY;
+        }
+        dist[src] = 0.0;
+        pq.push(src);
+
+        while (!pq.empty()) {
+            Node* u = pq.top(); pq.pop();
+            if (u == dest) break;
+
+            for (Edge* e : u->edges) {
+                Node* v = (e->src == u) ? e->dest : e->src;
+                double weight = e->length;
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    parent[v] = u;
+                    pq.push(v);
+                    visited_edges.emplace_back(u->coord, v->coord, sf::Color::Blue, 1.f);
+                    render();
+                }
+            }
+        }
 
         set_final_path(parent);
+    }
+
+    void bfs(Graph &graph) {
+        std::unordered_map<Node*, Node*> parent;
+        std::set<Node*> visited;
+        std::queue<Node*> q;
+
+        visited.insert(src);
+        q.push(src);
+
+        while (!q.empty()) {
+            Node* u = q.front(); q.pop();
+            if (u == dest) break;
+
+            for (Edge* e : u->edges) {
+                Node* v = (e->src == u) ? e->dest : e->src;
+                if (!visited.count(v)) {
+                    visited.insert(v);
+                    parent[v] = u;
+                    q.push(v);
+                    visited_edges.emplace_back(u->coord, v->coord, sf::Color::Yellow, 1.f);
+                    render();
+                }
+            }
+        }
+
+        set_final_path(parent);
+    }
+
+
+    double heuristic(Node* a, Node* b) {
+        float dx = a->coord.x - b->coord.x;
+        float dy = a->coord.y - b->coord.y;
+        return std::sqrt(dx * dx + dy * dy);
     }
 
     void a_star(Graph &graph) {
-        std::unordered_map<Node *, Node *> parent;
-        // TODO: Add your code here
+        std::unordered_map<Node*, double> g_score, f_score;
+        std::unordered_map<Node*, Node*> parent;
+        auto cmp = [&](Node* a, Node* b) { return f_score[a] > f_score[b]; };
+        std::priority_queue<Node*, std::vector<Node*>, decltype(cmp)> open_set(cmp);
+
+        for (auto& [_, node] : graph.nodes) {
+            g_score[node] = f_score[node] = INFINITY;
+        }
+        g_score[src] = 0.0;
+        f_score[src] = heuristic(src, dest);
+        open_set.push(src);
+
+        while (!open_set.empty()) {
+            Node* current = open_set.top(); open_set.pop();
+            if (current == dest) break;
+
+            for (Edge* e : current->edges) {
+                Node* neighbor = (e->src == current) ? e->dest : e->src;
+                double tentative_g = g_score[current] + e->length;
+                if (tentative_g < g_score[neighbor]) {
+                    parent[neighbor] = current;
+                    g_score[neighbor] = tentative_g;
+                    f_score[neighbor] = tentative_g + heuristic(neighbor, dest);
+                    open_set.push(neighbor);
+                    visited_edges.emplace_back(current->coord, neighbor->coord, sf::Color::Magenta, 1.f);
+                    render();
+                }
+            }
+        }
 
         set_final_path(parent);
     }
 
+
     //* --- render ---
     // En cada iteración de los algoritmos esta función es llamada para dibujar los cambios en el 'window_manager'
+
     void render() {
         sf::sleep(sf::milliseconds(10));
-        // TODO: Add your code here
+        window_manager->clear();
+        draw(true); // Esto dibuja los nodos, aristas, visitados, y path
+        window_manager->display();
     }
 
     //* --- set_final_path ---
@@ -84,8 +177,11 @@ class PathFindingManager {
     //*
     void set_final_path(std::unordered_map<Node *, Node *> &parent) {
         Node* current = dest;
-
-        // TODO: Add your code here
+        while (parent.find(current) != parent.end()) {
+            Node* prev = parent[current];
+            path.emplace_back(current->coord, prev->coord, sf::Color::Green, 3.f);
+            current = prev;
+        }
     }
 
 public:
@@ -95,11 +191,21 @@ public:
     explicit PathFindingManager(WindowManager *window_manager) : window_manager(window_manager) {}
 
     void exec(Graph &graph, Algorithm algorithm) {
-        if (src == nullptr || dest == nullptr) {
-            return;
-        }
+        if (src == nullptr || dest == nullptr) return;
 
-        // TODO: Add your code here
+        switch (algorithm) {
+            case Dijkstra:
+                dijkstra(graph);
+                break;
+            case BFS:
+                bfs(graph);
+                break;
+            case AStar:
+                a_star(graph);
+                break;
+            default:
+                break;
+        }
     }
 
     void reset() {

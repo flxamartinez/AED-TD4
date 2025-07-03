@@ -10,6 +10,7 @@
 #include <cstring>
 #include <fstream>
 #include <cmath>
+#include <iostream>
 
 // Color por defecto de todas las aristas (usado por SFML)
 sf::Color default_edge_color = sf::Color(255, 200, 100);
@@ -88,66 +89,40 @@ struct Edge {
                                                                                                   dest(dest) {
     }
 
-    static void
-    parse_csv(const std::string &edges_path, std::vector<Edge *> &edges, std::map<std::size_t, Node *> &nodes) {
-        edges.reserve(790'509);
-
+    static void parse_csv(const std::string &edges_path, std::vector<Edge *> &edges, std::map<std::size_t, Node *> &nodes) {
         std::ifstream file(edges_path);
-        char *header = new char[50];
-        header[49] = '\0';
-        file.getline(header, 50, '\n');
-        delete[] header;
+        std::string src_str, dest_str, speed_str, length_str, oneway_str, lanes_str;
 
-        while (true) {
-            char *src, *dest, *max_speed, *length, *oneway, *lanes;
+        while (std::getline(file, src_str, ',') &&
+               std::getline(file, dest_str, ',') &&
+               std::getline(file, speed_str, ',') &&
+               std::getline(file, length_str, ',') &&
+               std::getline(file, oneway_str, ',') &&
+               std::getline(file, lanes_str)) {
 
-            src = new char[15];
-            for (int i = 0; i < 15; ++i) src[i] = '\0';
-            dest = new char[15];
-            for (int i = 0; i < 15; ++i) dest[i] = '\0';
-            max_speed = new char[5];
-            for (int i = 0; i < 5; ++i) max_speed[i] = '\0';
-            length = new char[20];
-            for (int i = 0; i < 20; ++i) length[i] = '\0';
-            oneway = new char[6];
-            for (int i = 0; i < 6; ++i) oneway[i] = '\0';
-            lanes = new char[3];
-            for (int i = 0; i < 3; ++i) lanes[i] = '\0';
+            try {
+                std::size_t src_id = std::stoll(src_str);
+                std::size_t dest_id = std::stoll(dest_str);
 
-            file.getline(src, 15, ',');
-            file.getline(dest, 15, ',');
-            file.getline(max_speed, 5, ',');
-            file.getline(length, 20, ',');
-            file.getline(oneway, 6, ',');
-            file.getline(lanes, 3, '\n');
+                Node* src_node = nodes.at(src_id);
+                Node* dest_node = nodes.at(dest_id);
 
-            if (file.eof()) {
-                break;
-            }
-
-            std::size_t src_id = static_cast<size_t>(std::stoll(src));
-            std::size_t dest_id = static_cast<size_t>(std::stoll(dest));
-
-            Node *src_node = nodes[src_id];
-            Node *dest_node = nodes[dest_id];
-
-            Edge *edge = new Edge(
+                Edge* edge = new Edge(
                     src_node,
                     dest_node,
-                    std::stoi(max_speed),
-                    std::stod(length),
-                    std::strcmp(oneway, "True") == 0,
-                    std::stoi(lanes)
-            );
-            edges.push_back(edge);
+                    std::stoi(speed_str),
+                    std::stod(length_str),
+                    oneway_str == "True",
+                    std::stoi(lanes_str)
+                );
 
-            delete[] src;
-            delete[] dest;
-            delete[] oneway;
-            delete[] length;
-            delete[] lanes;
-        }
+                edges.push_back(edge);
+            } catch (const std::exception &e) {
+                std::cerr << "Error leyendo arista: " << e.what() << "\n";
+            }
+               }
     }
+
 
     void draw(sf::RenderWindow &window) const {
         sfLine line(src->coord, dest->coord, color, thickness);
